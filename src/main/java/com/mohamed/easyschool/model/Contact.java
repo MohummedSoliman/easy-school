@@ -1,12 +1,11 @@
 package com.mohamed.easyschool.model;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Contact {
 
     private String name;
@@ -14,4 +13,15 @@ public class Contact {
     private String email;
     private String subject;
     private String message;
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "name='" + name + '\'' +
+                ", mobileNum='" + mobileNum + '\'' +
+                ", email='" + email + '\'' +
+                ", subject='" + subject + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
