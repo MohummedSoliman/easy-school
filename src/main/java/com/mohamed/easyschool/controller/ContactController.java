@@ -2,8 +2,12 @@ package com.mohamed.easyschool.controller;
 
 import com.mohamed.easyschool.model.Contact;
 import com.mohamed.easyschool.service.ContactService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,13 +23,17 @@ public class ContactController {
     }
 
     @RequestMapping("/contact")
-    public String displayContactPage(){
+    public String displayContactPage(Model theModel){
+        theModel.addAttribute("contact", new Contact());
         return "contact";
     }
 
     @RequestMapping(value = "/saveMsg", method = RequestMethod.POST)
-    public ModelAndView saveMessage(Contact contact){
+    public String saveMessage(@Valid @ModelAttribute("contact") Contact contact, Errors errors){
+        if (errors.hasErrors()){
+            return "contact.html";
+        }
         contactService.saveContactDetails(contact);
-        return new ModelAndView("redirect:/contact");
+        return "redirect:/contact";
     }
 }
