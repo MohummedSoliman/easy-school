@@ -13,7 +13,7 @@ public class LoginController {
     public String displayLoginPage(
             @RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "logout", required = false) String logout,
-            Model theModle) {
+            Model theModel) {
         String errorMessage = null;
         if (error != null) {
             errorMessage = "Username or Password is in correct";
@@ -21,7 +21,7 @@ public class LoginController {
         if (logout != null) {
             errorMessage = "You Have been successfully logged out !!";
         }
-        theModle.addAttribute("errorMessage", errorMessage);
+        theModel.addAttribute("errorMessage", errorMessage);
         return "login.html";
     }
 }

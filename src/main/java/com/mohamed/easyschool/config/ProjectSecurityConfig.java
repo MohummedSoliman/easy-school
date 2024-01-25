@@ -13,40 +13,40 @@ import org.springframework.security.web.SecurityFilterChain;
 public class ProjectSecurityConfig {
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/", "/home").permitAll()
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(requests ->
+                        requests.requestMatchers("/dashboard").authenticated()
+                                .requestMatchers("/", "/home").permitAll()
                                 .requestMatchers("/holidays/**").permitAll()
                                 .requestMatchers("/contact").permitAll()
                                 .requestMatchers("/saveMsg").permitAll()
-                                .requestMatchers("courses").permitAll()
+                                .requestMatchers("/courses").permitAll()
                                 .requestMatchers("/about").permitAll()
+                                .requestMatchers("/login").permitAll()
                                 .requestMatchers("/assets/**").permitAll()
+                );
+        http.formLogin(loginConfigure -> loginConfigure.loginPage("/login")
+                        .defaultSuccessUrl("/dashboard").failureUrl("/login?error=true").permitAll()
                 )
-                .formLogin(login ->
-                        login.loginPage("/login")
-                                .defaultSuccessUrl("/dashboard")
-                                .failureUrl("/login?error=true")
-                                .permitAll()
-                )
-                .logout(logout ->
-                        logout.logoutSuccessUrl("/login?logout=true")
-                                .invalidateHttpSession(true)
-                                .permitAll()
+                .logout(logoutConfigure -> logoutConfigure.logoutSuccessUrl("/login?logout=true")
+                        .invalidateHttpSession(true).permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
-    public InMemoryUserDetailsManager userDetailsManager() {
+    @Bean
+    public InMemoryUserDetailsManager userDetailsService() {
+
         UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
                 .password("12345")
-                .username("Mohamed")
                 .roles("USER")
                 .build();
         UserDetails admin = User.withDefaultPasswordEncoder()
-                .password("123456")
-                .username("Zain")
+                .username("admin")
+                .password("54321")
                 .roles("USER", "ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
